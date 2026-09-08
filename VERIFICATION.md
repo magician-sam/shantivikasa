@@ -6,7 +6,11 @@
 - Desktop database schema 5 prevents older applications from silently reopening data with unsupported category semantics. A pre-upgrade backup is retained.
 - Cloud integration tests use an isolated in-memory libSQL database; desktop persistence tests use real on-disk SQLite databases. This avoids Windows cleanup locks in the native libSQL test binding.
 - The Windows build runs scripts/verify-ui.cjs against the actual Electron renderer and isolated app data, then scripts/verify-pdfs.py checks that generated PDFs contain item names, quantities, prices, totals and the final line of a long receipt.
-- TypeScript and production builds pass. The native UI/PDF script is configured as a Windows CI gate, but has not run for this release yet: this workspace prevents Electron from opening its required socket. Windows launch, generated PDFs and a physical printer still require verification; no shop data is used by the automated checks.
+- On 2026-09-08, all 26 data tests, TypeScript and production builds passed on Linux and Windows. The actual Windows Electron interface passed category creation/removal, preservation of an unsaved product during nested category creation, daily/weekly/monthly reports, and opening saved receipts.
+- Windows-generated PDFs passed checks for item names, quantities, prices, discounts, tax and totals. The 27-item test receipt fits within two A4 pages, with totals and the footer kept together. [Windows release checks](https://github.com/magician-sam/shantivikasa/actions/runs/34211628233).
+- Final short and long receipt PDFs and report screenshots were visually inspected with no clipping or overlap. The downloaded installer archive checksum and NSIS payload CRC passed verification.
+- The native product category dropdown avoids the blank selection found during the Windows check. Installer file paths are native to the build operating system; interface/PDF checks run before installer compression.
+- A physical receipt printer, camera and USB scanner still require checks on the shop PC. All automated tests use isolated temporary data, never the live shop database.
 
 ## Previous release verification
 
