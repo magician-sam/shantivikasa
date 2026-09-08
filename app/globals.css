@@ -83,9 +83,11 @@ body{background:var(--background);color:var(--foreground);font-family:Arial,Helv
  #shanti-print-root{display:block!important;position:static!important;width:78mm!important;max-width:100%!important;margin:0!important;padding:0!important;background:#fff!important}
  #shanti-print-root,#shanti-print-root *{visibility:visible!important;color:#000!important;animation:none!important;transition:none!important}
  #shanti-print-root .print-target{position:static!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:0!important;padding:3mm!important;border:0!important;box-sizing:border-box!important;transform:none!important}
- #shanti-print-root .printed-items>div{break-inside:avoid;page-break-inside:avoid}
+ #shanti-print-root .printed-items{display:block!important;margin-bottom:3mm!important}
+ #shanti-print-root .printed-items>div{margin:0 0 2mm!important;gap:2mm!important;font-size:12px!important;line-height:1.35!important;break-inside:avoid;page-break-inside:avoid}
  #shanti-print-root .printed-items>div>span{overflow-wrap:anywhere;min-width:0}
- #shanti-print-root .printed-items small{display:block}
+ #shanti-print-root .printed-items small{display:block;font-size:11px!important;margin-top:1mm!important}
+ #shanti-print-root .receipt-closing{break-inside:avoid;page-break-inside:avoid}
  #shanti-print-root .printed-items strong{white-space:nowrap}
  #shanti-print-root .receipt-summary,#shanti-print-root .total-line,#shanti-print-root .receipt-end{break-inside:avoid}
  #shanti-print-root .total-line strong{font-size:24px}

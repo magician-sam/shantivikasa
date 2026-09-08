@@ -1,1 +1,0 @@
-ALTER TABLE `cloud_categories` ADD `removed` integer DEFAULT 0 NOT NULL;
