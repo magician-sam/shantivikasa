@@ -1,0 +1,6 @@
+desktop/
+tests/
+release/
+.openai/
+*.sqlite
+*.db

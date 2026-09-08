@@ -1,0 +1,49 @@
+name: Build Windows installer
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['package*.json', '.github/workflows/windows.yml', 'app/**', 'components/**', 'desktop/**', 'lib/**', 'shared/**', 'public/**', 'data/**', 'scripts/**', 'tests/**', 'vite.config.*']
+concurrency:
+  group: windows-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  installer:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+      - run: python scripts/build-windows.py --stage-only
+      - name: Verify native interface and receipt printing
+        shell: pwsh
+        run: |
+          Expand-Archive release/electron-v44.2.0-win32-x64.zip release/ui-runtime
+          $process = Start-Process -FilePath "$pwd/release/ui-runtime/electron.exe" -ArgumentList "scripts/verify-ui.cjs" -Wait -PassThru -NoNewWindow
+          if ($process.ExitCode -ne 0) { throw "Native UI verification failed: $($process.ExitCode)" }
+      - run: python -m pip install pypdf==6.2.0
+      - run: python scripts/verify-pdfs.py
+      - run: choco install nsis --yes --no-progress
+      - run: python scripts/build-windows.py --skip-build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ShantiVikasa-QA
+          path: qa-artifacts/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ShantiVikasa-Windows
+          path: release/ShantiVikasa-Setup-*.exe
